@@ -1,0 +1,22 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual environment directories
+venv/
+.env/
+
+# Test results
+.pytest_cache/
+*.pytest_cache
+
+# Ignore compiled test files
+tests/__pycache__/
+openapi_parser/__pycache__/
+
+# Ignore temporary or local config files
+.DS_Store
+*.log
+*.tmp
