@@ -1,3 +1,7 @@
+Here's the updated README based on the suggestions:
+
+---
+
 # FountainAI OpenAPI Parser
 
 This repository provides a robust OpenAPI parser for the FountainAI ecosystem, enabling efficient parsing and validation of OpenAPI specifications. It's particularly well-suited for integration with FastAPI, allowing developers to validate their OpenAPI specifications programmatically and ensure consistency within API-driven applications.
@@ -41,29 +45,48 @@ The `fountainai_openapi_parser` is a specialized tool for parsing and validating
    pip install -r requirements.txt
    ```
 
+   > **Note**: This parser requires `PyYAML` specifically for loading YAML files.
+
 ## Quick Start
 
-To parse an OpenAPI YAML file:
+To parse an OpenAPI YAML file, use the `load_openapi_from_file()` function:
+
 ```python
-from openapi_parser import parser
+from openapi_parser.parser import load_openapi_from_file
 
 spec_path = "openapi_specs/Action-Service.yml"
-parsed_spec = parser.parse(spec_path)
+parsed_spec = load_openapi_from_file(spec_path)
 ```
 
 To handle any parsing errors:
+
 ```python
-from openapi_parser.exceptions import OpenAPIParsingError
+from openapi_parser.exceptions import ParsingError
 
 try:
-    parsed_spec = parser.parse(spec_path)
-except OpenAPIParsingError as e:
+    parsed_spec = load_openapi_from_file(spec_path)
+except ParsingError as e:
     print("Error parsing OpenAPI spec:", e)
+```
+
+You can also parse directly from a YAML string with `load_openapi_from_yaml()`:
+
+```python
+from openapi_parser.parser import load_openapi_from_yaml
+
+yaml_content = """
+openapi: "3.1.0"
+info:
+  title: Sample API
+  version: "1.0.0"
+paths: {}
+"""
+parsed_spec = load_openapi_from_yaml(yaml_content)
 ```
 
 ## Integration with FastAPI
 
-The parser is designed to integrate smoothly into FastAPI, enabling validation of OpenAPI specifications as part of your API's lifecycle. Here’s a step-by-step guide to incorporating the OpenAPI parser in a FastAPI app.
+The parser integrates smoothly into FastAPI, enabling validation of OpenAPI specifications as part of your API's lifecycle. Here’s a step-by-step guide to incorporating the OpenAPI parser in a FastAPI app.
 
 ### 1. Parse and Validate OpenAPI Specs on Startup
 
@@ -71,18 +94,18 @@ In FastAPI, you can use a startup event to parse and validate your OpenAPI specs
 
 ```python
 from fastapi import FastAPI
-from openapi_parser import parser
-from openapi_parser.exceptions import OpenAPIParsingError
+from openapi_parser.parser import load_openapi_from_file
+from openapi_parser.exceptions import ParsingError
 
 app = FastAPI()
 
 @app.on_event("startup")
 async def validate_openapi_specs():
     try:
-        spec_path = "path/to/your_openapi_spec.yml"
-        parsed_spec = parser.parse(spec_path)
+        spec_path = "openapi_specs/Action-Service.yml"
+        parsed_spec = load_openapi_from_file(spec_path)
         print("OpenAPI specification loaded successfully")
-    except OpenAPIParsingError as e:
+    except ParsingError as e:
         print(f"Error parsing OpenAPI spec: {e}")
         # Optionally, you could raise an exception to prevent app startup
 ```
@@ -94,8 +117,8 @@ Once the OpenAPI specification is parsed, you can access it within your endpoint
 ```python
 @app.get("/api/paths")
 async def list_paths():
-    spec_path = "path/to/your_openapi_spec.yml"
-    parsed_spec = parser.parse(spec_path)
+    spec_path = "openapi_specs/Action-Service.yml"
+    parsed_spec = load_openapi_from_file(spec_path)
     return parsed_spec["paths"]  # Return all paths from the OpenAPI spec
 ```
 
@@ -125,15 +148,15 @@ To ensure your OpenAPI specifications are always valid, integrate the parser int
 ```python
 # ci_validate_openapi.py
 import sys
-from openapi_parser import parser
-from openapi_parser.exceptions import OpenAPIParsingError
+from openapi_parser.parser import load_openapi_from_file
+from openapi_parser.exceptions import ParsingError
 
-spec_path = "path/to/your_openapi_spec.yml"
+spec_path = "openapi_specs/Action-Service.yml"
 
 try:
-    parser.parse(spec_path)
+    load_openapi_from_file(spec_path)
     print("OpenAPI specification is valid")
-except OpenAPIParsingError as e:
+except ParsingError as e:
     print(f"OpenAPI specification error: {e}")
     sys.exit(1)  # Exit with an error status if the spec is invalid
 ```
@@ -176,4 +199,4 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ---
 
-This README provides a comprehensive guide for integrating the OpenAPI parser into a FastAPI app, with examples for loading and validating OpenAPI files, using parsed data in endpoints, and automating validation in a CI/CD pipeline.
+This README provides an updated, comprehensive guide for integrating the OpenAPI parser into a FastAPI app, with examples for loading and validating OpenAPI files, using parsed data in endpoints, and automating validation in a CI/CD pipeline.
