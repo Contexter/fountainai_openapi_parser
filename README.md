@@ -1,6 +1,3 @@
-Here's the updated README based on the suggestions:
-
----
 
 # FountainAI OpenAPI Parser
 
